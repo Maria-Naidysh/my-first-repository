@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-import time
 dac_bits = [16, 20, 21, 25, 26, 17, 27, 22]
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(dac_bits, GPIO.OUT)
