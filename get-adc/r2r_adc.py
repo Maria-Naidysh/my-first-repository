@@ -14,7 +14,7 @@ class R2R_ADC:
         GPIO.setup(self.comp_gpio, GPIO.IN)
     def deinit(self):
         try:
-            self.deinit()
+           GPIO.cleanup()
         except Exception:
             pass
     def number_to_dac(self, number):
@@ -39,13 +39,38 @@ class R2R_ADC:
         if self.verbose:
             print(f"Код АЦП: {number}, напряжение: {voltage:.3f}")
         return voltage
+    def successive_approximation_adc(self):
+        result = 0
+        for bit in range(7, -1, -1):
+            test_value = result | (1 << bit)
+            self.number_to_dac(test_value)
+            time.sleep(self.compare_time)
+            if GPIO.input(self.comp_gpio) == 0:
+                result = test_value
+        return result
+    def get_sar_voltage(self):
+        number = self.successive_approximation_adc()
+        voltage = (number/255.0)*self.dynamic_range
+        if self.verbose:
+            print(f"SAR Код АЦП{number}, напряжение {voltage:.3f} В")
+        return voltage
+
 if __name__ == "__main__":
     adc = None
-    try:
-        adc = R2R_ADC( dynamic_range=3.183, compare_time=0.01, verbose=True)
+    try: 
+        adc = R2R_ADC(dynamic_range=3.183)
         while True:
-            voltage = adc.get_sc_voltage()
-            print(f"Измеренное напряжение: {voltage:.3f}")
-    finally:
+            voltage = adc.get_sar_voltage()
+            print(f"Измеренное напряжение SAR: {voltage:.3f}")
+    finally: 
         if adc is not None:
             adc.deinit()
+ 
+    #try:
+    #    adc = R2R_ADC( dynamic_range=3.183, compare_time=0.01, verbose=True)
+    #    while True:
+    #        voltage = adc.get_sc_voltage()
+    #        print(f"Измеренное напряжение: {voltage:.3f}")
+    #finally:
+    #    if adc is not None:
+    #        adc.deinit()
