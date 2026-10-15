@@ -57,20 +57,18 @@ class R2R_ADC:
 
 if __name__ == "__main__":
     adc = None
-    try: 
-        adc = R2R_ADC(dynamic_range=3.183)
+    #try: 
+    #    adc = R2R_ADC(dynamic_range=3.183)
+    #    while True:
+    #        voltage = adc.get_sar_voltage()
+    #        print(f"Измеренное напряжение SAR: {voltage:.3f}")
+    
+ 
+    try:
+        adc = R2R_ADC( dynamic_range=3.183, compare_time=0.01, verbose=True)
         while True:
-            voltage = adc.get_sar_voltage()
-            print(f"Измеренное напряжение SAR: {voltage:.3f}")
-    finally: 
+            voltage = adc.get_sc_voltage()
+            print(f"Измеренное напряжение: {voltage:.3f}")
+    finally:
         if adc is not None:
             adc.deinit()
- 
-    #try:
-    #    adc = R2R_ADC( dynamic_range=3.183, compare_time=0.01, verbose=True)
-    #    while True:
-    #        voltage = adc.get_sc_voltage()
-    #        print(f"Измеренное напряжение: {voltage:.3f}")
-    #finally:
-    #    if adc is not None:
-    #        adc.deinit()

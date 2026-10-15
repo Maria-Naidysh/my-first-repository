@@ -6,7 +6,7 @@ adc = R2R_ADC(dynamic_range=3.183, compare_time = 0.0001)
 voltage_values = []
 time_values = []
 
-duration = 3.0
+duration = 30.0
 
 try:
     start_time = time.time()
